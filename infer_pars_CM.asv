@@ -1,0 +1,120 @@
+% script to calibrate parameters da,ha,delta in addition to contact matrix
+% from available data
+clear
+
+UKpop = readtable('./data/United Kingdom-2020.csv');
+
+ageY = 1:4;
+ageA = 5:13;
+ageS = 13:21;
+menpop = table2array(UKpop(1:end-1,'M'));
+womenpop = table2array(UKpop(1:end-1,'F'));
+Tpop = menpop + womenpop;
+
+popY = Tpop(ageY);
+popA = Tpop(ageA);
+popS = Tpop(ageS);
+
+pop_propY = popY./sum(popY);
+pop_propA = popA./sum(popA);
+pop_propS = popS./sum(popS);
+
+load('../../code/mats/Probabilities.mat','Sympt_2_hosp')
+load('../../code/mats/parameter_set.mat','Detection')
+load('../../code/mats/parameter_set.mat','Susceptibility')
+load('../../code/mats/Probabilities.mat','Inf_2_Death')
+load('../../code/mats/Probabilities.mat','Hosp_2_Death')
+
+da = zeros(3,1);
+ha = zeros(3,1);
+sa = zeros(3,1);
+DIa = zeros(3,1);
+DHa = zeros(3,1);
+
+da(1) = Detection(ageY)*pop_propY;
+ha(1) = sum(Sympt_2_hosp(ageY).*pop_propY);
+sa(1) = Susceptibility(ageY)*pop_propY;
+DIa(1) = sum(Inf_2_Death(ageY).*pop_propY);
+DHa(1) = sum(Hosp_2_Death(ageY).*pop_propY);
+da(2) = Detection(ageA)*pop_propA;
+ha(2) = sum(Sympt_2_hosp(ageA).*pop_propA);
+sa(2) = Susceptibility(ageA)*pop_propA;
+DIa(2) = sum(Inf_2_Death(ageA).*pop_propA);
+DHa(2) = sum(Hosp_2_Death(ageA).*pop_propA);
+da(3) = Detection(ageS)*pop_propS;
+ha(3) = sum(Sympt_2_hosp(ageS).*pop_propS);
+sa(3) = Susceptibility(ageS)*pop_propS;
+DIa(3) = sum(Inf_2_Death(ageS).*pop_propS);
+DHa(3) = sum(Hosp_2_Death(ageS).*pop_propS);
+
+da
+ha
+sa
+DIa
+DHa
+
+clear all
+
+% read data
+load('../mats/Distributions.mat','Distribution_Hosp_Time','Distribution_Symptoms_to_Hospital')
+
+% do not fit Distribution_Symptoms_to_Hospital over day 1 - which is
+% recorded as zero
+%Distribution_Symptoms_to_Hospital = 1 - cumsum(Distribution_Symptoms_to_Hospital);
+
+days1 = [0:30]';
+
+f1 = fit(days1,Distribution_Symptoms_to_Hospital(days1+1)','exp1','Lower',[1 -1],'Upper',[1 0])
+
+figure(1)
+bar(days1,Distribution_Symptoms_to_Hospital(days1+1),"blue","FaceAlpha",0.3,"EdgeColor","none")
+hold on
+plot(f1,days1,Distribution_Symptoms_to_Hospital(days1+1))
+axis([-1 31 0 1.1])
+title('Time from Symptoms to Hospital')
+
+
+days2 = [0:39]';
+f2 = fit(days2,Distribution_Hosp_Time(days2+1)','exp1','Lower',[1 -1],'Upper',[1 0])
+
+figure(2)
+bar(days2,Distribution_Hosp_Time(days2+1),"blue","FaceAlpha",0.3,"EdgeColor","none")
+hold on
+plot(f2,days2,Distribution_Hosp_Time(days2+1))
+axis([-1 60 0 1.1])
+title('Time in Hospital')
+
+
+Distribution_Symptoms_to_Hospital = cumsum(Distribution_Symptoms_to_Hospital);
+
+ft = fittype('1-exp(-a*x)');
+
+f4 = fit(days1,Distribution_Symptoms_to_Hospital(days1+1)',ft,'StartPoint',8)
+
+figure(4)
+bar(days1,Distribution_Symptoms_to_Hospital(days1+1),"blue","FaceAlpha",0.3,"EdgeColor","none")
+hold on
+plot(f4,days1,Distribution_Symptoms_to_Hospital(days1+1))
+axis([-1 30 0 1.1])
+title('Time in Hospital')
+
+Distribution_Hosp_Time = [0 cumsum(Distribution_Hosp_Time(1:end-1)-Distribution_Hosp_Time(2:end))./sum(Distribution_Hosp_Time(1:end-1)-Distribution_Hosp_Time(2:end))];
+
+f3 = fit(days2,Distribution_Hosp_Time(days2+1)',ft,'StartPoint',8)
+
+figure(3)
+bar(days2,Distribution_Hosp_Time(days2+1),"blue","FaceAlpha",0.3,"EdgeColor","none")
+hold on
+plot(f3,days2,Distribution_Hosp_Time(days2+1))
+axis([-1 60 0 1.1])
+title('Time in Hospital')
+
+
+%% Calibrating contact matrix
+
+CDATA = load('./data/prem_UKall.csv');
+lastage = ageS(end);
+
+CM = [sum(CDATA(:,ageY),2), sum(CDATA(:,ageA),2), sum(CDATA(:,ageS),2)]; %sum columns by age groupings
+CM = [Tpop(ageY)'*CM(ageY,:)/sum(Tpop(ageY)); Tpop(ageA)'*CM(ageA,:)/sum(Tpop(ageA)); Tpop(ageS)'*CM(ageS,:)/sum(Tpop(ageS))] %weight rows by age groupings
+
