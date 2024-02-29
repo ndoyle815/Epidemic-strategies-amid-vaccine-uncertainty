@@ -1,28 +1,43 @@
 % script to run control strategies without vaccination and rank according
 % to the objective function, producing subplots for Figure 3 in the
 % manuscript
-clear
+clear; close all
 
 %Plotting preferences
 set(0,'defaultlinelinewidth',2)
 set(groot,'defaultAxesTickLabelInterpreter','latex')
 set(0,'defaultTextInterpreter','latex')
 
+%%%%%%%%%%%%%%%%%  INPUT FOR SUBPANELS  %%%%%%%%%%%%%%%%%
+
+%Fig3a:  tf = 360,  Hc = 1250
+%Fig3b:  tf = 720,  Hc = 1250
+%Fig3c:  tf = 1080, Hc = 1250
+%Fig3d:  tf = 1080, Hc = 1000
+
+tf = 1080;
+Hc = 1000;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 if not(exist('mats/Thresholds.mat','file'))
     disp('No strategy thresholds saved: Running Simulations.m')
     Simulations
+    close all
 end
 
 % Plotting
 markers = {'o','^','s','d'};
 cols = [0.9290 0.6940 0.1250; 0.3290 0.6940 0.1250; 0.4940 0.1840 0.5560; 0 0.5470 0.9410];
 
+%% MAIN SCRIPT
+
 % load default parameters
 para0 = load('./mats/Parameters.mat');
 
 % Define time to run model for
 t_init = 30;    % preliminary run
-maxtime = 360;  % main simulation
+maxtime = tf;   % main simulation
 vstarts = [2160, 360]; % vaccine times
 
 % define strategy numbers and switching thresholds
@@ -33,7 +48,7 @@ strategies = 1:length(thresholds);
 para = para0;
 para.init = 1;
 para.maxtime = maxtime;
-para.Hmax = 1250;        % modify hospital capacity
+para.Hmax = Hc;        % modify hospital capacity
 
 % define functional weights
 weights = 0:0.01:1;  % varying w
@@ -123,8 +138,8 @@ if para.maxtime < 500
 end
 
 %save figure
-if not(isfolder('sim_images'))
-    mkdir('sim_images')
+if not(isfolder('./figs/rank_images'))
+    mkdir('./figs/rank_images')
 end
 
-saveas(gcf,strcat('./sim_images/CostFunction_',num2str(para.Hmax),'_',num2str(maxtime),'.png'))
+saveas(gcf,strcat('./figs/rank_images/CostFunction_',num2str(para.Hmax),'_',num2str(maxtime),'.png'))

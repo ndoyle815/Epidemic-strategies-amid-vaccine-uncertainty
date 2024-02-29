@@ -1,6 +1,6 @@
 % script to plot vaccine arrival date distributions and generate Figures 
 % S1-2 from the manuscript
-clear
+clear; close all
 
 %Plotting preferences
 set(0,'defaultlinelinewidth',2)
@@ -42,7 +42,7 @@ xtickangle(0)
 axis([min(Ts)-Tdiff max(Ts)+Tdiff 0 0.2])
 xlabel('$T$ (days)')
 ylabel('Probability')
-title('$T$ Marginal distribution')
+title('$T$ marginal distribution')
 grid on
 
 subplot(1,2,2)
@@ -56,11 +56,11 @@ title('$\eta$ marginal distribution')
 grid on
 
 %save figure
-if not(isfolder('dist_images'))
-    mkdir('dist_images')
+if not(isfolder('./figs/dist_images'))
+    mkdir('./figs/dist_images')
 end
 
-saveas(gcf,'./dist_images/vaccdists_marg.png')
+saveas(gcf,'./figs/dist_images/vaccdists_marg.png')
 
 
 %% joint distributions
@@ -118,6 +118,6 @@ c.Label.Interpreter = "latex";
 
 
 
-save(strcat('./mats/jointdists.mat'),"P")
+save('./mats/jointdists.mat',"P")
 
-saveas(f,'./dist_images/vaccdists_joint.png')
+saveas(f,'./figs/dist_images/vaccdists_joint.png')

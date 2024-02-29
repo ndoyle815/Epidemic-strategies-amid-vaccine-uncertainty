@@ -4,13 +4,29 @@
 
 % NB: This file is analagous to Simulations.m with a difference in subpanel
 % formatting. To save thresholds to mat file, run Simulations.m
-clear
+clear; close all
 
 %Plotting preferences
 set(0,'defaultlinelinewidth',2)
 set(groot,'defaultAxesTickLabelInterpreter','latex')
 set(0,'defaultTextInterpreter','latex')
 set(0,'defaultaxesfontsize',16)
+
+%%%%%%%%%%%%%%%%%  INPUT FOR SUBPANELS  %%%%%%%%%%%%%%%%%
+
+%Fig 2:  vstarts = 2160 (or anything > 1080)
+%Fig S5: vstarts = 360
+%FigXa:  which_strat = 1 (Cautious Easing)
+%FigXb:  which_strat = 2 (Suppression)
+%FigXc:  which_strat = 3 (Slow Control)
+%FigXd:  which_strat = 4 (Rapid Control)
+
+vstarts = 360;
+which_strat = 1;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% MAIN SCRIPT
 
 % load default parameters
 if not(isfolder('mats'))
@@ -20,20 +36,22 @@ end
 
 para0 = load('./mats/Parameters.mat');
 
-% vaccination
-vstarts = 2160;
-
 % Define time to run model for
 t_init = 30;    % preliminary run
 maxtime = 720;  % main simulation
 
 % define strategy numbers and switching thresholds
-thresholds = [50 100 150 500; 50 100 150 200; 100 200 400 500; 200 300 350 450];
-%load('./mats/Thresholds.mat')
+if not(exist('mats/Thresholds.mat','file'))
+    disp('No strategy thresholds saved: Running Simulations.m')
+    Simulations
+    close all;
+end
+
+load('mats/Thresholds.mat')
 strategies = 1:length(thresholds);
 
 % which strategy to reproduce
-SELECTED_STRAT = strategies(4);
+SELECTED_STRAT = strategies(which_strat);
 
 % plotting preperation
 figure('Position',[200 400 500 250])
@@ -150,9 +168,9 @@ end
 toc
 
 %save figure
-if not(isfolder('sim_images'))
-    mkdir('sim_images')
+if not(isfolder('./figs/sim_images'))
+    mkdir('./figs/sim_images')
 end
 
-saveas(gcf,strcat('./sim_images/','simulation_',num2str(para.vstart),'_strat',num2str(strat),'.png'))
+saveas(gcf,strcat('./figs/sim_images/','simulation_',num2str(para.vstart),'_strat',num2str(strat),'.png'))
 

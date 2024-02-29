@@ -6,16 +6,23 @@
 % NB: Different granularity in vaccine outcomes are used to reproduce
 % Figures 4 and 5. Generating the strategy costs for this script requires
 % running dists_joint.m
-clear
+clear; close all
 
 %Plotting preferences
 set(0,'defaultlinelinewidth',2)
 set(groot,'defaultAxesTickLabelInterpreter','latex')
 set(0,'defaultTextInterpreter','latex')
 
+%%%%%%%%%%%%%%%%  INPUT FOR WHICH FIGURE  %%%%%%%%%%%%%%%%
+
+% find min cost (=1, Fig 5) or max cost (=2, Fig S7)
+minormax = 2;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %for saving figures
-if not(isfolder('vacc_images'))
-    mkdir('vacc_images')
+if not(isfolder('./figs/vacc_images'))
+    mkdir('./figs/vacc_images')
 end
 
 % load cost outputs
@@ -30,6 +37,7 @@ load('./mats/cost_tensor.mat');
 if not(exist('mats/jointdists.mat','file'))
     disp('No vaccine pmfs saved: Running FigS1S2_jointdists.m')
     FigS1S2_jointdists
+    close all
 end
 
 load('./mats/jointdists.mat');
@@ -53,9 +61,6 @@ ndists = size(P,1);
 credintsize = 0.95;
 LB = (1 - credintsize)/2;
 UB = 1 - LB;
-
-% find min cost (=1) or max cost (=2)
-minormax = 1;
 
 % matrix to store probabilities each strategy is optimal per weight
 Poptimal = zeros(length(ndists),length(weights),length(strategies));
@@ -207,7 +212,7 @@ for dist = 1:ndists
     set(gca,'TickLength',[0 0])
     grid on
 
-    saveas(f,strcat('./vacc_images/expcost_jointdists',num2str(dist),'.png'))
+    saveas(f,strcat('./figs/vacc_images/expcost_jointdists',num2str(minormax),'_',num2str(dist),'.png'))
 
     %close all
 
@@ -243,4 +248,4 @@ for dist = 1:ndists
     grid on
 end
 
-saveas(f4,'./vacc_images/pmaxcostonly.png')
+saveas(f4,strcat('./figs/vacc_images/pminormax_',num2str(minormax),'.png'))

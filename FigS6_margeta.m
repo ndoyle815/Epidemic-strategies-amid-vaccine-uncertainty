@@ -1,7 +1,7 @@
 % Script to evaluate control strategies with vaccination, taking the
 % eventual coverage distributions into account and producing Figure S6 from
 % the manuscript
-clear
+clear; close all
 
 %Plotting preferences
 set(0,'defaultlinelinewidth',2)
@@ -9,10 +9,23 @@ set(groot,'defaultAxesTickLabelInterpreter','latex')
 set(0,'defaultTextInterpreter','latex')
 set(0,'defaultaxesfontsize',18)
 
+%%%%%%%%%%%%%%%%%  INPUT FOR SUBPANELS  %%%%%%%%%%%%%%%%%
+
+%FigS6a:   T = 360
+%FigS6b:   T = 630
+%FigS6c:   T = 900
+
+T = 360;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 if not(exist('mats/Thresholds.mat','file'))
     disp('No strategy thresholds saved: Running Simulations.m')
     Simulations
+    close all
 end
+
+%% MAIN SCRIPT
 
 % load default parameters
 para0 = load('./mats/Parameters.mat');
@@ -34,7 +47,7 @@ para.Hmax = 1250;        % modify hospital capacity
 etas = 0.0:0.01:1.0;
 
 % vaccination start times
-vstart = 540;
+vstart = T;
 para.vstart = vstart;
 
 % define functional weights
@@ -198,9 +211,9 @@ if para.efficacy == 0.3
 end
 
 %save figure
-if not(isfolder('vacc_images'))
-    mkdir('vacc_images')
+if not(isfolder('./figs/vacc_images'))
+    mkdir('./figs/vacc_images')
 end
 
-saveas(f,strcat('./vacc_images/optstrat_T',num2str(para.vstart),'.png'));
+saveas(f,strcat('./figs/vacc_images/optstrat_T',num2str(para.vstart),'.png'));
 

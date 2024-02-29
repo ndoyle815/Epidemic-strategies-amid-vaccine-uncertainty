@@ -1,5 +1,5 @@
 % script to define model and control parameters into a mat file
-clear
+clear; close all
 
 if not(isfolder('mats'))
     mkdir('mats')

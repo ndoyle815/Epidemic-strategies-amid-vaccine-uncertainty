@@ -2,7 +2,7 @@
 % vaccine joint distribution outcomes into account
 
 % NB: this is setup for running Fig5.m
-clear
+clear; close all
 
 %Plotting preferences
 set(0,'defaultlinelinewidth',2)

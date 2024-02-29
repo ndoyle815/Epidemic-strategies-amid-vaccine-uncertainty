@@ -1,7 +1,7 @@
 % script to run simulations of control model with and without vaccination,
 % produces Figure 2 and Figures S4-5 (strategies without/with vaccination) from
 % the manuscript
-clear
+clear; close all
 
 %Plotting preferences
 set(0,'defaultlinelinewidth',2)
@@ -18,7 +18,7 @@ end
 para0 = load('./mats/Parameters.mat');
 
 % vaccination
-vstarts = 2160;
+vstarts = 360;
 
 % Define time to run model for
 t_init = 30;    % preliminary run
@@ -198,11 +198,11 @@ end
 toc
 
 %save figure
-if not(isfolder('sim_images'))
-    mkdir('sim_images')
+if not(isfolder('./figs/sim_images'))
+    mkdir('./figs/sim_images')
 end
 
-saveas(gcf,strcat('./sim_images/','simulation_',num2str(para.vstart),'.png'))
+saveas(gcf,strcat('./figs/sim_images/','simulation_',num2str(para.vstart),'.png'))
 
 %save thresholds used to mat file for reproducibility
 save("./mats/Thresholds.mat","thresholds",'-mat')
@@ -223,9 +223,13 @@ save("./mats/Thresholds.mat","thresholds",'-mat')
 % axis([0 maxtime 0 sum(para.N)./1000])
 % xline(para.vstart,'--','DisplayName','Arrival','Color','k')
 % xlabel('Time (days)')
-% ylabel('Population (thousands)')
-% title('Cumulative Vaccinations')
+% ylabel('Vaccinated (thousands)')
 % legend('Interpreter','latex','Location','west')
 % grid on
-
-% saveas(f2,'./vacc_images/Tvacc.png')
+% 
+% %save figure
+% if not(isfolder('./figs/vacc_images'))
+%     mkdir('./figs/vacc_images')
+% end
+% 
+% saveas(f2,'./figs/vacc_images/Tvacc.png')

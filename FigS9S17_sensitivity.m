@@ -1,6 +1,6 @@
 % script to run sensitivity analysis to biological parameters, reproducing
 % Figures S9-17 from the report
-clear
+clear; close all
 
 %Plotting preferences
 set(0,'defaultlinelinewidth',2)
@@ -10,11 +10,29 @@ set(0,'defaultaxesfontsize',16)
 
 grayColor = [.6 .6 .6];
 
+%%%%%%%%%%%%%%%%  INPUT FOR WHICH FIGURE  %%%%%%%%%%%%%%%%
+
+% gamma: var_to_test = 1
+% delta: var_to_test = 2
+% rho:   var_to_test = 3
+% tau:   var_to_test = 4
+% omega: var_to_test = 5
+% da:    var_to_test = 6
+% ha:    var_to_test = 7
+% R0:    var_to_test = 8
+
+var_to_test = 8;  % which variable
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % load default parameters
 if not(exist('mats/Thresholds.mat','file'))
     disp('No strategy thresholds saved: Running Simulations.m')
     Simulations
+    close all
 end
+
+%% MAIN SCRIPT
 
 para0 = load('./mats/Parameters.mat');
 
@@ -23,11 +41,10 @@ t_init = 30;    % preliminary run
 maxtime = 720;  % main simulation
 
 % Sensitivity parameter and selection
-vars = {'\gamma','\delta','\rho','\tau','\omega','d_a','h_a','R_0'};
+vars = {'\gamma','\delta','\rho','\tau','\omega','\hat{d}','\hat{h}','R_0'};
 labs = {'gam','del','rho','tau','ome','da','ha','R0'};
 
-var_to_test = 8;
-
+% variable ranges to test
 gammas = 0.1:0.02:0.5;
 gammas(end+1) = para0.gamma;
 rhos = 0.0:0.02:0.2;
@@ -40,11 +57,12 @@ omegas = 0.0005:0.00025:0.0030;
 omegas(end+1) = para0.omega;
 das = 0.5:0.1:1.5;
 das(end+1) = 1;
-has = 0.5:0.15:2.0;
+has = 0.5:0.1:1.5;
 has(end+1) = 1;
 R0s = 2.0:0.2:4.0;
 R0s(end+1) = para0.R0;
 
+% select variable
 if var_to_test == 1
     var_arr = gammas;
 elseif var_to_test == 2
@@ -217,7 +235,11 @@ end
 toc
 
 %save figure
-saveas(gcf,strcat('./sens_images/','sim-sensitivity_',char(labs(var_to_test)),'.png'))
+if not(isfolder('./figs/sens_images'))
+    mkdir('./figs/sens_images')
+end
+
+saveas(gcf,strcat('./figs/sens_images/','sim-sensitivity_',char(labs(var_to_test)),'.png'))
 
 
 %% variability in cost
@@ -267,4 +289,4 @@ for strat = strategies
 end
 
 %save figure
-saveas(gcf,strcat('./sens_images/','cost-sensitivity_',char(labs(var_to_test)),'.png'))
+saveas(gcf,strcat('./figs/sens_images/','cost-sensitivity_',char(labs(var_to_test)),'.png'))

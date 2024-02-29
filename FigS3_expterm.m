@@ -1,6 +1,6 @@
 % script to reproduce Figure S3 (qualitative behaviour of exponential term
 % in objective function) from the manuscript
-clear
+clear; close all
 
 %Plotting preferences
 set(0,'defaultlinelinewidth',2)
@@ -22,13 +22,13 @@ end
 patch([min(hosp_peaks) min(hosp_peaks) max(hosp_peaks) max(hosp_peaks)], [0 1 1 0], 'k', 'FaceAlpha', 0.3, 'EdgeColor', 'none')
 xline(Hmax,'--','$H_c$','color','k','LineWidth',2,'Interpreter','latex','FontSize',16,'LabelOrientation','horizontal','LabelHorizontalAlignment','left')
 axis([min(hosp_peaks) max(hosp_peaks) 0 5])
-xlabel('Peak Hospitalisations')
+xlabel('Peak hospital admissions')
 ylabel('Cost')
 legend({'$w_H = 0.2$', '$w_H = 2$', '$w_H = 10$'},'Location','west','Interpreter','latex','FontSize',16)
 
 %save figure
-if not(isfolder('sim_images'))
-    mkdir('sim_images')
+if not(isfolder('./figs/sim_images'))
+    mkdir('./figs/sim_images')
 end
 
-saveas(gcf,'./sim_images/expterm.png')
+saveas(gcf,'./figs/sim_images/expterm.png')

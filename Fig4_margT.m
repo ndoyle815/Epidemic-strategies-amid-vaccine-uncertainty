@@ -3,8 +3,8 @@
 % the manuscript
 
 % Figure S18 (cost with discounting) can be reproduced if the final 
-% "apply_discounting" argument in CostFunction() is set to 1
-clear
+% "apply_discounting" argument in CostFunction() is set to 1 for eta = 0.9
+clear; close all
 
 %Plotting preferences
 set(0,'defaultlinelinewidth',2)
@@ -12,10 +12,25 @@ set(groot,'defaultAxesTickLabelInterpreter','latex')
 set(0,'defaultTextInterpreter','latex')
 set(0,'defaultaxesfontsize',18)
 
+%%%%%%%%%%%%%%%%%  INPUT FOR SUBPANELS  %%%%%%%%%%%%%%%%%
+
+%Fig4a:   eta = 0.1, disc = 0
+%Fig4b:   eta = 0.5, disc = 0
+%Fig4c:   eta = 0.9, disc = 0
+%FigS18:  eta = 0.9, disc = 1
+
+eta = 0.9;
+disc = 0;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 if not(exist('mats/Thresholds.mat','file'))
     disp('No strategy thresholds saved: Running Simulations.m')
     Simulations
+    close all
 end
+
+%% MAIN SCRIPT
 
 % load default parameters
 para0 = load('./mats/Parameters.mat');
@@ -37,7 +52,7 @@ para.maxtime = maxtime;
 para.Hmax = 1250;        % modify hospital capacity
 
 % define vaccine efficacy
-para.efficacy = 0.9;
+para.efficacy = eta;
 
 % define functional weights
 weights = 0.0:0.01:1.0;
@@ -76,7 +91,7 @@ for strat = strategies
     
         for w = 1:nw
             % evaluate cost function
-            fs(w,v,strat) = CostFunction([weights(w), w2], para, burden, stringency, peak_hospital, 0);
+            fs(w,v,strat) = CostFunction([weights(w), w2], para, burden, stringency, peak_hospital, disc);
         end
     end
 end
@@ -200,10 +215,12 @@ if para.efficacy == 0.3
 end
 
 %save figure
-if not(isfolder('vacc_images'))
-    mkdir('vacc_images')
+if not(isfolder('./figs/vacc_images'))
+    mkdir('./figs/vacc_images')
 end
 
-saveas(f,strcat('./vacc_images/optstrat_eta',num2str(para.efficacy),'.png'));
-
-
+if disc == 1
+    saveas(f,strcat('./figs/vacc_images/optstrat_eta',num2str(para.efficacy),'_disc.png'));
+else
+    saveas(f,strcat('./figs/vacc_images/optstrat_eta',num2str(para.efficacy),'.png'));
+end

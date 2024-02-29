@@ -1,7 +1,7 @@
 % script to rank the control strategies under each vaccine-related joint
 % distribution according to whether it minimises the mean, mode or a given
 % percentile cost (eg. 95th). Reproduces Figure S8 from the manuscript
-clear
+clear; close all
 
 %Plotting preferences
 set(0,'defaultlinelinewidth',2)
@@ -10,8 +10,8 @@ set(0,'defaultTextInterpreter','latex')
 set(0,'defaultaxesfontsize',18)
 
 %for saving figures
-if not(isfolder('vacc_images'))
-    mkdir('vacc_images')
+if not(isfolder('./figs/rank_images'))
+    mkdir('./figs/rank_images')
 end
 
 % load cost outputs
@@ -141,7 +141,7 @@ for dist = 1:ndists
     f = figure();
     f.Position = [200 800 800 600];
     if dist == 2
-        sgtitle('(D2) Optimistic Vaccine Distribution','FontSize',20,'Interpreter','Latex')
+        sgtitle('Optimistic (D2) vaccine distribution','FontSize',20,'Interpreter','Latex')
     else
         sgtitle(strcat('Distribution',{' '},num2str(dist)),'FontSize',20,'Interpreter','Latex')
     end
@@ -157,7 +157,7 @@ for dist = 1:ndists
     xticks(weights(1:10:end))
     xticklabels([])
     xtickangle(0)
-    xlim([0.25 0.75])
+    %xlim([0.25 0.75])
     yticks([1,2,3,4])
     ylabel('Ranking');
     title('Minimise expected (mean) cost')
@@ -174,7 +174,7 @@ for dist = 1:ndists
     xticks(weights(1:10:end))
     xticklabels([])
     xtickangle(0)
-    xlim([0.25 0.75])
+    %xlim([0.25 0.75])
     yticks([1,2,3,4])
     ylabel('Ranking')
     title('Minimise most likely cost')
@@ -191,7 +191,7 @@ for dist = 1:ndists
     xticks(weights(1:10:end))
     xticklabels([])
     xtickangle(0)
-    xlim([0.25 0.75])
+    %xlim([0.25 0.75])
     yticks([1,2,3,4])
     ylabel('Ranking')
     title(strcat('Maximise Probability of lowest cost'))
@@ -224,7 +224,7 @@ for dist = 1:ndists
     axis([min(weights) max(weights) 0.5 4.5])
     xticks(weights(1:10:end))
     xtickangle(0)
-    xlim([0.25 0.75])
+    %xlim([0.25 0.75])
     yticks([1,2,3,4])
     xlabel('Weight $w$')
     ylabel('Ranking')
@@ -249,7 +249,7 @@ for dist = 1:ndists
 %     grid on 
 
 
-    saveas(f,strcat('./ranking_images/rankings_dist',num2str(dist),'.png'))
+    saveas(f,strcat('./figs/rank_images/rankings_dist',num2str(dist),'.png'))
     close all
 
 end
