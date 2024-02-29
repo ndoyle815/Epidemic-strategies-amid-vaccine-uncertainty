@@ -22,7 +22,7 @@ set(0,'defaultaxesfontsize',16)
 %FigXd:  which_strat = 4 (Rapid Control)
 
 vstarts = 360;
-which_strat = 1;
+which_strat = 4;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

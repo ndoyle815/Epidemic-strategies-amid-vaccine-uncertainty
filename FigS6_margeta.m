@@ -150,7 +150,7 @@ xlim([1 nv])
 zticks([0.2 0.4 0.6 0.8 1])
 zlim([0.2 1])
 label_y = ylabel('Weight $w$','HorizontalAlignment','right','Rotation',0,'VerticalAlignment','baseline');
-%label_x = xlabel('Coverage $\eta$','HorizontalAlignment','left','Rotation',0,'VerticalAlignment','baseline');
+label_x = xlabel('Coverage $\eta$','HorizontalAlignment','left','Rotation',0,'VerticalAlignment','baseline');
 f.CurrentAxes.ZDir = 'Reverse';
 zlabel('Cost')
 

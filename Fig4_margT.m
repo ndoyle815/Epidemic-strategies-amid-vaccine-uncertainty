@@ -19,7 +19,7 @@ set(0,'defaultaxesfontsize',18)
 %Fig4c:   eta = 0.9, disc = 0
 %FigS18:  eta = 0.9, disc = 1
 
-eta = 0.9;
+eta = 0.1;
 disc = 0;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -153,7 +153,7 @@ xlim([1 nv])
 zticks([0.2 0.4 0.6 0.8 1])
 zlim([0.2 1])
 label_y = ylabel('Weight $w$','HorizontalAlignment','right','Rotation',0,'VerticalAlignment','baseline');
-%label_x = xlabel('$T$ (days)','HorizontalAlignment','left','Rotation',0,'VerticalAlignment','baseline');
+label_x = xlabel('$T$ (days)','HorizontalAlignment','left','Rotation',0,'VerticalAlignment','baseline');
 f.CurrentAxes.ZDir = 'Reverse';
 zlabel('Cost')
 
@@ -209,7 +209,7 @@ ylim([1 nw])
 xlim([1 nv])
 ylabel('Weight $w$','FontSize',22)
 label_x = xlabel('$T$ (days)','FontSize',22);
-label_x.Position(2) = label_x.Position(2) - 0.6;
+%label_x.Position(2) = label_x.Position(2) - 0.6;
 if para.efficacy == 0.3
     legend(h2, 'S1 (Cautious easing)', 'S2 (Suppression)', 'S3 (Slow control)', 'S4 (Rapid control)','Location','eastoutside','Interpreter','latex')
 end
