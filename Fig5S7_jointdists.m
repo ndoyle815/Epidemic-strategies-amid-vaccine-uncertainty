@@ -16,7 +16,7 @@ set(0,'defaultTextInterpreter','latex')
 %%%%%%%%%%%%%%%%  INPUT FOR WHICH FIGURE  %%%%%%%%%%%%%%%%
 
 % find min cost (=1, Fig 5) or max cost (=2, Fig S7)
-minormax = 2;
+minormax = 1;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -75,7 +75,7 @@ for dist = 1:ndists
     CostUB = 1.0.*ones(length(dweights),length(strategies));
 
     f = figure(dist);
-    if dist == 1
+    if dist == 4
         hht = 287.5;
     else
         hht = 250;
@@ -126,8 +126,8 @@ for dist = 1:ndists
 
     ax = gca;
     ax.InnerPosition(1) = ax.InnerPosition(1) - 0.05;
-    if dist == 1
-        ax.InnerPosition(2) = 0.2507*250/hht;
+    if dist == 4
+        ax.InnerPosition(2) = 0.2507*250/hht + 0.15;
         ax.InnerPosition(4) = 0.6671*250/hht;
     else
         ax.InnerPosition(2) = 0.2507;
@@ -160,8 +160,8 @@ for dist = 1:ndists
     axis([min(weights)+0.0 max(weights)-0.0 0.2 1])
 
     ax = gca;
-    if dist == 1
-        ax.InnerPosition(2) = 0.2507*250/hht;
+    if dist == 4
+        ax.InnerPosition(2) = 0.2507*250/hht + 0.15;
         ax.InnerPosition(4) = 0.6671*250/hht;
     else
         ax.InnerPosition(2) = 0.2507;
@@ -178,9 +178,9 @@ for dist = 1:ndists
     set(gca,'FontSize',18)
     grid on
 
-    if dist == 1
+    if dist == 4
         leg = legend({'','S1 (Cautious Easing)','','','S2 (Suppression)','','','S3 (Slow Control)','','','S4 (Rapid Control)',''},'Interpreter','Latex',...
-              'FontSize',18,'Orientation','horizontal','Position',[0.45 0.9 0.1 0.06]);
+              'FontSize',18,'Orientation','horizontal','Position',[0.45 0.05 0.1 0.06]);
     end
 
     subplot(1,4,4)
@@ -194,8 +194,8 @@ for dist = 1:ndists
 
     ax = gca;
     ax.InnerPosition(1) = ax.InnerPosition(1) + 0.05;
-    if dist == 1
-        ax.InnerPosition(2) = 0.2507*250/hht;
+    if dist == 4
+        ax.InnerPosition(2) = 0.2507*250/hht + 0.15;
         ax.InnerPosition(4) = 0.6671*250/hht;
     else
         ax.InnerPosition(2) = 0.2507;

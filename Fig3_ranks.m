@@ -15,8 +15,8 @@ set(0,'defaultTextInterpreter','latex')
 %Fig3c:  tf = 1080, Hc = 1250
 %Fig3d:  tf = 1080, Hc = 1000
 
-tf = 1080;
-Hc = 1000;
+tf = 360;
+Hc = 1250;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -57,12 +57,14 @@ w2 = 2;
 f1 = figure();
 
 % add additional sizing to top panel for legend
-if para.maxtime < 500
+if para.maxtime < 500 || para.Hmax < 1100
     hht = 275;
 else
     hht = 225;
 end
 f1.Position = [600 600 600*length(vstarts) hht];
+
+titles = {'No Vaccination', 'Vaccination'};
 
 tic
 for vs = 1:length(vstarts)
@@ -105,12 +107,16 @@ for vs = 1:length(vstarts)
     end
 
     ax = gca;
-    if para.maxtime > 500
-        ax.Position(2) = ax.Position(2) + 0.25;
-        ax.Position(4) = ax.Position(4) - 0.25;
-    else
+    if para.maxtime < 500
         ax.Position(2) = ax.Position(2) + 0.18;
         ax.Position(4) = 0.603*200/hht;
+        title(titles(vs))
+    elseif para.Hmax < 1100
+        ax.Position(2) = ax.Position(2) + 0.35;
+        ax.Position(4) = 0.603*200/hht;
+    else
+        ax.Position(2) = ax.Position(2) + 0.25;
+        ax.Position(4) = ax.Position(4) - 0.25;
     end
 
     set(gca, 'YDir','reverse')
@@ -132,9 +138,9 @@ end
 toc
 
 % add legend for top panel
-if para.maxtime < 500
+if para.Hmax < 1100
     legend({'S1 (Cautious Easing)','S2 (Suppression)','S3 (Slow Control)','S4 (Rapid Control)'},...
-            'Interpreter','Latex','FontSize',18,'Orientation','horizontal','Position',[0.09 0.84 0.82 0.1])
+            'Interpreter','Latex','FontSize',18,'Orientation','horizontal','Position',[0.09 0.04 0.82 0.1])
 end
 
 %save figure

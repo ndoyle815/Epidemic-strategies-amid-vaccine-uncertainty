@@ -21,7 +21,7 @@ set(0,'defaultaxesfontsize',16)
 %FigXc:  which_strat = 3 (Slow Control)
 %FigXd:  which_strat = 4 (Rapid Control)
 
-vstarts = 360;
+vstarts = 2160;
 which_strat = 4;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -58,6 +58,11 @@ figure('Position',[200 400 500 250])
 stIDs = {'S1', 'S2', 'S3', 'S4'};
 stnames = {'(Cautious easing)', '(Suppression)', '(Slow control)', '(Rapid control)'};
 stpos = [25 175 325 500; 25 175 325 475; 75 225 375 525; 100 250 400 550];
+
+dt = t_init/3;
+markedtimes = dt:dt:(maxtime-dt);
+mygreen = [0.1 0.5 0.1];
+myblue = [0 0.2 0.8];
 
 tic
 for strat = SELECTED_STRAT
@@ -98,29 +103,47 @@ for strat = SELECTED_STRAT
 
 
     % plotting active hospitalisations
-    yyaxis left
+    %yyaxis left
     ax1 = gca;
     ax1.YColor = 'k';
     ax1.FontSize = 16;
     ax1.FontSizeMode = 'manual';
 
     for i = ix1'
-        patch([Classes.SD(i,1) Classes.SD(i,1) Classes.SD(i+2,1) Classes.SD(i+2,1)], [0 20000 20000 0], 'y', 'Facealpha',0.3, 'EdgeAlpha',0)
+        patch([Classes.SD(i,1) Classes.SD(i,1) Classes.SD(i+2,1) Classes.SD(i+2,1)], [0 20000 20000 0], 'y', 'Facealpha',0.25, 'EdgeAlpha',0)
         hold on
     end
     for i = ix2'
-        patch([Classes.SD(i,1) Classes.SD(i,1) Classes.SD(i+2,1) Classes.SD(i+2,1)], [0 20000 20000 0], 'r', 'Facealpha',0.3, 'EdgeAlpha',0)
+        patch([Classes.SD(i,1) Classes.SD(i,1) Classes.SD(i+2,1) Classes.SD(i+2,1)], [0 20000 20000 0], 'r', 'Facealpha',0.25, 'EdgeAlpha',0)
         hold on
     end
-    plot(Classes.t, sum(Classes.IH,2), 'k', 'LineWidth', 2.5)
-    
+
     if vstarts < maxtime
         if strat == 1
-            xline(para.vstart,'-',{'Vaccine','Arrival'},'Color','b','Linewidth',2,'FontSize',16,'Interpreter','latex','LabelOrientation','horizontal','LabelHorizontalAlignment','left')
+            xline(para.vstart,'-',{'Vaccine','Arrival'},'Color',mygreen,'Linewidth',2,'FontSize',18,'Interpreter','latex','LabelOrientation','horizontal','LabelHorizontalAlignment','left')
         else
-            xline(para.vstart,'-','Color','b','Linewidth',2)
+            xline(para.vstart,'-','Color',mygreen,'Linewidth',2)
         end
     end
+
+%     plot(markedtimes, para.T01.*ones(size(markedtimes)), 'Marker', '_', 'MarkerSize', 2, 'MarkerEdgeColor', 'b', 'LineStyle', 'none')
+%     hold on
+%     plot(markedtimes, para.T12.*ones(size(markedtimes)), 'Marker', '_', 'MarkerSize', 2, 'MarkerEdgeColor', 'b', 'LineStyle', 'none')
+%     hold on
+%     plot(markedtimes, para.T10.*ones(size(markedtimes)), 'Marker', 'o', 'MarkerSize', 2, 'MarkerEdgeColor', 'b', 'MarkerFaceColor', 'b', 'LineStyle', 'none')
+%     hold on
+%     plot(markedtimes, para.T21.*ones(size(markedtimes)), 'Marker', 'o', 'MarkerSize', 2, 'MarkerEdgeColor', 'b', 'MarkerFaceColor', 'b', 'LineStyle', 'none')
+%     hold on
+    T1 = plot(markedtimes, para.T01.*ones(size(markedtimes)), '--', 'Color', myblue, 'LineWidth', 1.5);
+    hold on
+    T2 = plot(markedtimes, para.T12.*ones(size(markedtimes)), '--', 'Color', myblue, 'LineWidth', 1.5);
+    hold on
+    T3 = plot(markedtimes, para.T10.*ones(size(markedtimes)), '.', 'Color', myblue, 'LineWidth', 1.5);
+    hold on
+    T4 = plot(markedtimes, para.T21.*ones(size(markedtimes)), '.', 'Color', myblue, 'LineWidth', 1.5);
+    hold on
+
+    plot(Classes.t, sum(Classes.IH,2), 'k', 'LineWidth', 3.5)
 
     if strat > 1/2
         xlabel('Time (days)')
@@ -135,28 +158,30 @@ for strat = SELECTED_STRAT
     ylab.Position(1) = ylab.Position(1) - 25;
 
 
-    yyaxis right
-    ax2 = gca;
-    ax2.YColor = 'k';
-    ax2.TickDir = 'none';
-    ax2Y = ax2.YAxis(2,1);
-    ax2Y.FontSize = 14;
-    ax2.FontSizeMode = 'manual';
-
-    plot(Classes.t, para.T01.*ones(size(Classes.t)), 'k--', 'LineWidth',0.5)
-    hold on
-    plot(Classes.t, para.T12.*ones(size(Classes.t)), 'k--', 'LineWidth',0.5)
-    hold on
-    plot(Classes.t, para.T10.*ones(size(Classes.t)), 'k--', 'LineWidth',0.5)
-    hold on
-    plot(Classes.t, para.T21.*ones(size(Classes.t)), 'k--', 'LineWidth',0.5)
-    yticks(stpos(strat,:))
-    
-    if para.T21 > para.T01
-        yticklabels({'$T_{10}$','$T_{01}$','$T_{21}$','$T_{12}$'})
-    else
-        yticklabels({'$T_{10}$','$T_{21}$','$T_{01}$','$T_{12}$'})
-    end
+%     yyaxis right
+%     ax2 = gca;
+%     ax2.YColor = 'k';
+%     ax2.TickDir = 'none';
+%     ax2Y = ax2.YAxis(2,1);
+%     ax2Y.FontSize = 14;
+%     ax2.FontSizeMode = 'manual';
+% 
+% 
+% 
+%     plot(markedtimes, para.T01.*ones(size(markedtimes)), 'Marker', '_', 'MarkerSize', 5, 'MarkerEdgeColor', mygrey, 'LineStyle', 'none')
+%     hold on
+%     plot(markedtimes, para.T12.*ones(size(markedtimes)), 'Marker', 'o', 'MarkerSize', 5, 'MarkerEdgeColor', mygrey, 'LineStyle', 'none')
+%     hold on
+%     plot(markedtimes, para.T10.*ones(size(markedtimes)), 'Marker', 'x', 'MarkerSize', 5, 'MarkerEdgeColor', mygrey, 'LineStyle', 'none')
+%     hold on
+%     plot(markedtimes, para.T21.*ones(size(markedtimes)), 'Marker', 's', 'MarkerSize', 5, 'MarkerEdgeColor', mygrey, 'LineStyle', 'none')
+%     yticks(stpos(strat,:))
+%     
+%     if para.T21 > para.T01
+%         yticklabels({'$T_{10}$','$T_{01}$','$T_{21}$','$T_{12}$'})
+%     else
+%         yticklabels({'$T_{10}$','$T_{21}$','$T_{01}$','$T_{12}$'})
+%     end
 
     xticks(0:180:maxtime)
     xtickangle(0)
